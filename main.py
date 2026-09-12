@@ -2,8 +2,11 @@ from app.embeddings import EmbeddingService
 # import numpy as np
 from pypdf import PdfReader
 import tiktoken
+from qdrant_client.models import PointStruct
+from app.vector_store import VectorStore
 
 embedding_service = EmbeddingService()
+vector_store = VectorStore()
 
 
 # reader=PdfReader("./data/salesforce/api_rest.pdf")
@@ -113,6 +116,35 @@ embedding_service = EmbeddingService()
 # compare("B","D")
 # compare("C","D")
 
+# query = "how do i create customer in netsuite?"
+
+# query_embedding = embedding_service.embed(query)
+
+# results = []
+
+# for chunk in chunks:
+
+#     score=embedding_service.cosine_similarity(query_embedding,chunk["embedding"])
+
+#     results.append({
+#         "score":score,
+#         "chunk":chunk
+#     })
+
+# results.sort(key= lambda result:result["score"],
+#              reverse=True)
+
+# top_k=2
+# top_results=results[:top_k]  
+
+# for result in top_results:
+#     print(
+#         result["score"],
+#         result["chunk"]["connector"],
+#         result["chunk"]["method"],
+#         result["chunk"]["text"]
+#     ) 
+
 chunks = [
     {
         "id": "1",
@@ -144,35 +176,34 @@ chunks = [
     }
 ]
 
-
+i=1
+points=[]
 for chunk in chunks:
     chunk["embedding"] = embedding_service.embed(chunk["text"])
+    point=PointStruct(
+        id=i,
+        vector= chunk["embedding"],
+        payload={
+            "text": chunk["text"],
+            "connector": chunk["connector"],
+            "api_id": chunk["api_id"],
+            "method": chunk["method"]
+        }
+    )
+    points.append(point)
+    i=i+1
+
+vector_store.upsert_chunck(listpoints=points)
 
 query = "how do i create customer in netsuite?"
 
 query_embedding = embedding_service.embed(query)
 
-results = []
+vector_results = vector_store.query(query_embedding=query_embedding,k=3,connector="netsuite")
 
-for chunk in chunks:
-
-    score=embedding_service.cosine_similarity(query_embedding,chunk["embedding"])
-
-    results.append({
-        "score":score,
-        "chunk":chunk
-    })
-
-results.sort(key= lambda result:result["score"],
-             reverse=True)
-
-top_k=2
-top_results=results[:top_k]  
-
-for result in top_results:
-    print(
-        result["score"],
-        result["chunk"]["connector"],
-        result["chunk"]["method"],
-        result["chunk"]["text"]
-    ) 
+for result in vector_results.points:
+    print("Score:", result.score)
+    print("Text:", result.payload["text"])
+    print("Connector:", result.payload["connector"])
+    print("API:", result.payload["api_id"])
+    print()
