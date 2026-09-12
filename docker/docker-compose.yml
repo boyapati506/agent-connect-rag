@@ -1,0 +1,126 @@
+services:
+
+  # ============================================================
+  # QDRANT - Vector Database
+  # ============================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:6333/readyz || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - search_network
+
+
+  # ============================================================
+  # OPENSEARCH
+  # ============================================================
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    restart: unless-stopped
+
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+
+      # Local development only
+      - DISABLE_SECURITY_PLUGIN=true
+
+      # JVM memory
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:
+        soft: 65536
+        hard: 65536
+
+    ports:
+      # HOST:CONTAINER
+      # 9200 is already occupied, so use 9201 externally.
+      - "9201:9200"
+      - "9601:9600"
+
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:9200/_cluster/health || exit 1"
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+    networks:
+      - search_network
+
+
+  # ============================================================
+  # OPENSEARCH DASHBOARDS
+  # ============================================================
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
+    container_name: opensearch-dashboards
+    restart: unless-stopped
+
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+
+    ports:
+      - "5601:5601"
+
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+    networks:
+      - search_network
+
+
+# ============================================================
+# VOLUMES
+# ============================================================
+volumes:
+
+  qdrant_data:
+    name: qdrant_data
+
+  opensearch_data:
+    name: opensearch_data
+
+
+# ============================================================
+# NETWORK
+# ============================================================
+networks:
+
+  search_network:
+    name: search_network
+    driver: bridge
