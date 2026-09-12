@@ -4,9 +4,11 @@ from pypdf import PdfReader
 import tiktoken
 from qdrant_client.models import PointStruct
 from app.vector_store import VectorStore
+from app.reranker_service import RerankerService
 
 embedding_service = EmbeddingService()
 vector_store = VectorStore()
+reranker = RerankerService()
 
 
 # reader=PdfReader("./data/salesforce/api_rest.pdf")
@@ -201,9 +203,31 @@ query_embedding = embedding_service.embed(query)
 
 vector_results = vector_store.query(query_embedding=query_embedding,k=3,connector="netsuite")
 
+# for result in vector_results.points:
+#     print("Score:", result.score)
+#     print("Text:", result.payload["text"])
+#     print("Connector:", result.payload["connector"])
+#     print("API:", result.payload["api_id"])
+#     print()
+
+candidates = []
+
 for result in vector_results.points:
-    print("Score:", result.score)
-    print("Text:", result.payload["text"])
-    print("Connector:", result.payload["connector"])
-    print("API:", result.payload["api_id"])
+    candidates.append({
+        "text": result.payload["text"],
+        "connector": result.payload["connector"],
+        "api_id": result.payload["api_id"],
+        "method": result.payload["method"],
+        "retrieval_score": result.score
+    })
+
+reranked_results = reranker.rerank(
+    query=query,
+    candidates=candidates
+)
+
+for result in reranked_results:
+    print("Text:", result["text"])
+    print("Vector score:", result["retrieval_score"])
+    print("Rerank score:", result["rerank_score"])
     print()
