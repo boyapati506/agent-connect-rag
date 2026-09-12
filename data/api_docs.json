@@ -1,0 +1,154 @@
+[
+  {
+    "id": "oracle-create-sales-order",
+    "connector": "oracle_fusion",
+    "method": "POST",
+    "path": "/salesOrders",
+    "title": "Create Sales Order",
+    "description": "Creates a new sales order in Oracle Fusion."
+  },
+  {
+    "id": "oracle-get-sales-order",
+    "connector": "oracle_fusion",
+    "method": "GET",
+    "path": "/salesOrders/{id}",
+    "title": "Get Sales Order",
+    "description": "Retrieves an existing sales order using its identifier."
+  },
+  {
+    "id": "oracle-add-sales-order-line",
+    "connector": "oracle_fusion",
+    "method": "POST",
+    "path": "/salesOrders/{id}/lines",
+    "title": "Create Sales Order Line",
+    "description": "Adds a new line item to an existing Oracle Fusion sales order."
+  },
+  {
+    "id": "salesforce-create-account",
+    "connector": "salesforce",
+    "method": "POST",
+    "path": "/services/data/vXX.X/sobjects/Account",
+    "title": "Create Account",
+    "description": "Creates a new Account record in Salesforce."
+  },
+  {
+    "id": "salesforce-get-account",
+    "connector": "salesforce",
+    "method": "GET",
+    "path": "/services/data/vXX.X/sobjects/Account/{id}",
+    "title": "Get Account",
+    "description": "Retrieves a Salesforce Account record by identifier."
+  },
+  {
+    "id": "salesforce-create-contact",
+    "connector": "salesforce",
+    "method": "POST",
+    "path": "/services/data/vXX.X/sobjects/Contact",
+    "title": "Create Contact",
+    "description": "Creates a new Contact record in Salesforce."
+  },
+  {
+    "id": "netsuite-create-sales-order",
+    "connector": "netsuite",
+    "method": "POST",
+    "path": "/record/v1/salesOrder",
+    "title": "Create Sales Order",
+    "description": "Creates a sales order record in NetSuite."
+  },
+  {
+    "id": "netsuite-get-sales-order",
+    "connector": "netsuite",
+    "method": "GET",
+    "path": "/record/v1/salesOrder/{id}",
+    "title": "Get Sales Order",
+    "description": "Retrieves an existing NetSuite sales order."
+  },
+  {
+    "id": "netsuite-create-customer",
+    "connector": "netsuite",
+    "method": "POST",
+    "path": "/record/v1/customer",
+    "title": "Create Customer",
+    "description": "Creates a new customer record in NetSuite."
+  },
+  {
+    "id": "quickbooks-create-invoice",
+    "connector": "quickbooks",
+    "method": "POST",
+    "path": "/v3/company/{companyId}/invoice",
+    "title": "Create Invoice",
+    "description": "Creates a new invoice in QuickBooks Online."
+  },
+  {
+    "id": "quickbooks-get-invoice",
+    "connector": "quickbooks",
+    "method": "GET",
+    "path": "/v3/company/{companyId}/invoice/{id}",
+    "title": "Get Invoice",
+    "description": "Retrieves an invoice in QuickBooks Online."
+  },
+  {
+    "id": "quickbooks-create-customer",
+    "connector": "quickbooks",
+    "method": "POST",
+    "path": "/v3/company/{companyId}/customer",
+    "title": "Create Customer",
+    "description": "Creates a customer in QuickBooks Online."
+  },
+  {
+    "id": "hubspot-create-contact",
+    "connector": "hubspot",
+    "method": "POST",
+    "path": "/crm/v3/objects/contacts",
+    "title": "Create Contact",
+    "description": "Creates a new CRM contact in HubSpot."
+  },
+  {
+    "id": "hubspot-get-contact",
+    "connector": "hubspot",
+    "method": "GET",
+    "path": "/crm/v3/objects/contacts/{id}",
+    "title": "Get Contact",
+    "description": "Retrieves a HubSpot CRM contact."
+  },
+  {
+    "id": "hubspot-create-company",
+    "connector": "hubspot",
+    "method": "POST",
+    "path": "/crm/v3/objects/companies",
+    "title": "Create Company",
+    "description": "Creates a company record in HubSpot CRM."
+  },
+  {
+    "id": "servicenow-create-incident",
+    "connector": "servicenow",
+    "method": "POST",
+    "path": "/api/now/table/incident",
+    "title": "Create Incident",
+    "description": "Creates a new incident record in ServiceNow."
+  },
+  {
+    "id": "servicenow-get-incident",
+    "connector": "servicenow",
+    "method": "GET",
+    "path": "/api/now/table/incident/{sys_id}",
+    "title": "Get Incident",
+    "description": "Retrieves an existing ServiceNow incident."
+  },
+  {
+    "id": "workday-get-worker",
+    "connector": "workday",
+    "method": "GET",
+    "path": "/workers/{id}",
+    "title": "Get Worker",
+    "description": "Retrieves worker information from Workday."
+  },
+  {
+    "id": "sap-create-business-partner",
+    "connector": "sap",
+    "method": "POST",
+    "path": "/BusinessPartner",
+    "title": "Create Business Partner",
+    "description": "Creates a new business partner in SAP."
+  }
+]
